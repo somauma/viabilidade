@@ -34,7 +34,7 @@ button {
 .wrapBody {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 1vw;
     align-items: center;
     margin-bottom: 40px;
 }
