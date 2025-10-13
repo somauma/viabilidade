@@ -1,0 +1,182 @@
+:root {
+    --colorBG1: #ffffff;
+    --colorBG2: #ffffff;
+    --colorBG3: #9b35ff;
+    --colorBORDER1: #d5d5d5;
+    --colorBORDER2: #9b35ff;
+    --colorTXT1: #9b35ff;
+    --colorTXT2: #ffffff;
+}
+
+/*ELEMENTOS BÁSICOS*/
+* {
+    box-sizing: border-box;
+}
+html {
+    font-family: "Merriweather";
+}
+body {
+    display: flex;
+    justify-content: center;
+    background-color: var(--colorBG1);
+    margin: 0;
+}
+input {
+    font-family: "Merriweather";
+    font-size: 12px;
+    font-weight: 900;
+}
+button {
+    font-family: "Merriweather";
+}
+
+/*ELEMENTOS CRIADOS*/
+.wrapBody {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 40px;
+}
+.wrapBar1 {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--colorBG2);
+    width: 100%;
+    height: 48px;
+    padding: 10px 40px 10px 40px;
+    border-bottom: 1px solid var(--colorBORDER2);
+    align-items: center;
+    font-family: "Roboto Flex";
+    font-weight: 300;
+    color: var(--colorTXT1);
+}
+.wrapPage1 {
+    display: grid;
+    margin-top: 10px;
+    gap: 10px;
+    width: 400px;
+    align-content: center;
+}
+.containerExemplo {
+    background-color: #d49cf0;
+}
+.wrapBarraSup {
+    background-color: aqua;
+}
+.wrapCollapseAll {
+    display: flex;
+    justify-content: end;
+}
+.btnCollapseAll {
+    align-content: center;
+    background-color: #643692;
+    height: 26px;
+    padding: 6px;
+    color: var(--colorTXT2);
+    font-size: 9px;
+    border-radius: 4px;
+    border: 0 solid var(--colorBORDER1);
+    cursor: pointer;
+}
+.btnCollapseAll:active {
+    transform: translateY(1px);
+}
+.wrapCategoria {
+    background-color: var(--colorBG1);
+    margin-bottom: 4px;
+}
+.tituloCategoria {
+    padding: 6px;
+    background-color: #9b35ff;
+    border-radius: 4px 4px 0 0;
+    color: var(--colorTXT2);
+    font-size: 12px;
+    cursor: pointer;
+}
+.tituloCategoria:active {
+    transform: translateY(1px);
+}
+.gridPremissa {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr 90px;
+    align-items: center;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+.PremissaLabel {
+    font-weight: 100;
+}
+/* remove as setinhas padrão */
+.PremissaInputMESES::-webkit-inner-spin-button,
+.PremissaInputMESES::-webkit-outer-spin-button,
+.PremissaInputJUROS::-webkit-inner-spin-button,
+.PremissaInputJUROS::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.PremissaInputSpinbox {
+    display: flex;
+    position: relative;
+    background-color: aqua;
+}
+.spinControls {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    gap: 4px;
+}
+.spinControls button {
+    border: 1px solid var(--colorBORDER2);
+    background: var(--colorBG3);
+    color: var(--colorTXT2);
+    border-radius: 3px;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0;
+}
+.spinControls button:active {
+    transform: translateY(1px);
+}
+.PremissaInputMESES {
+    border: 1px solid var(--colorBORDER2);
+    border-radius: 4px 0 0 4px;
+    line-height: 16px;
+    padding: 4px;
+    width: 100%
+}
+.PremissaInputJUROS {
+    border: 1px solid var(--colorBORDER2);
+    border-radius: 4px 0 0 4px;
+    line-height: 16px;
+    padding: 4px;
+    width: 100%;
+}
+.PremissaInputAREAS {
+    border: 1px solid var(--colorBORDER2);
+    border-radius: 4px 0 0 4px;
+    line-height: 16px;
+    padding: 4px;
+    width: 100%;
+}
+.PremissaInputPRECOS {
+    border: 1px solid var(--colorBORDER2);
+    border-radius: 4px 0 0 4px;
+    line-height: 16px;
+    padding: 4px;
+    width: 100%;
+}
+.PremissaUnit {
+    border-top: 1px solid var(--colorBORDER2);
+    border-right: 1px solid var(--colorBORDER2);
+    border-bottom: 1px solid var(--colorBORDER2);
+    border-radius: 0 4px 4px 0;
+    line-height: 16px;
+    padding: 4px;
+    color: var(--colorTXT1);
+    font-size: 10px;
+    font-weight: 900;
+}

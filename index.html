@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Somauma | Viabilidade v4</title>
+        <link rel="stylesheet" href="styles.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Roboto+Flex:opsz,wght@8..144,100..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet" />
+    </head>
+    <body>
+        <div class="wrapBody">
+            <div class="wrapBar1"><span>Somauma | Estudos de Viabilidade v4</span><span>© 2025</span></div>
+            <div class="wrapPage1">
+                <!-- CATEGORIA 0 -->
+                <div class="wrapCollapseAll">
+                    <button class="btnCollapseAll" id="btn-toggle-all">Expandir/Contrair</button>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Prazos</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-prazo-diligencia">Diligências</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputMESES"
+                                    id="id-prazo-diligencia"
+                                    placeholder="Input"
+                                    value="3"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="1" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">meses</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-prazo-aprovacao">Aprovações</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputMESES"
+                                    id="id-prazo-aprovacao"
+                                    placeholder="Input"
+                                    value="12"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="1" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">meses</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-prazo-construcao">Construção</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputMESES"
+                                    id="id-prazo-construcao"
+                                    placeholder="Input"
+                                    value="18"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="1" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">meses</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-prazo-repasse">Repasse</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputMESES"
+                                    id="id-prazo-repasse"
+                                    placeholder="Input"
+                                    value="3"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="1" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">meses</div>
+                        </div>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Empreendimento</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-area-residencial">Área Privativa Residencial</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputAREAS"
+                                    id="id-area-residencial"
+                                    placeholder="Input"
+                                    value="1000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">m²</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-area-escritorios">Área Privativa Escritórios</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputAREAS"
+                                    id="id-area-escritorios"
+                                    placeholder="Input"
+                                    value="0"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">m²</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-area-lojas">Área Privativa Lojas</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputAREAS"
+                                    id="id-area-lojas"
+                                    placeholder="Input"
+                                    value="1000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">m²</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-area-outros">Área Privativa Outros</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputAREAS"
+                                    id="id-area-outros"
+                                    placeholder="Input"
+                                    value="0"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">m²</div>
+                        </div>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Aquisição</summary>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">VGV</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-preco-residencial">Preço Residencial</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputPRECOS"
+                                    id="id-preco-residencial"
+                                    placeholder="Input"
+                                    value="10000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">R$/m²</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-preco-escritorios">Preço Escritórios</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputPRECOS"
+                                    id="id-preco-escritorios"
+                                    placeholder="Input"
+                                    value="10000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">R$/m²</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-preco-lojas">Preço Lojas</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputPRECOS"
+                                    id="id-preco-lojas"
+                                    placeholder="Input"
+                                    value="12000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">R$/m²</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-preco-outros">Preço Outros</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputPRECOS"
+                                    id="id-preco-outros"
+                                    placeholder="Input"
+                                    value="5000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">R$/m²</div>
+                        </div>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Outras Receitas</summary>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Despesas Comerciais</summary>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Despesas Operacionais</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-aquisicao">Fee Aquisição</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-fee-aquisicao"
+                                    placeholder="Input"
+                                    value="1.00"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% da Aquisição</div>
+                        </div>
+                         <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-originacao">Fee Originação</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-fee-originacao"
+                                    placeholder="Input"
+                                    value="1.00"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do VGV</div>
+                        </div>
+                         <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-gestao">Fee Gestão Global</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-fee-gestao"
+                                    placeholder="Input"
+                                    value="2.50"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do VGV</div>
+                        </div>
+                         <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-pop">Pré-Operacionais (POP)</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-pop"
+                                    placeholder="Input"
+                                    value="4.00"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do C. Obra</div>
+                        </div>
+                         <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-op">Operacionais (OP)</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-op"
+                                    placeholder="Input"
+                                    value="1.00"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do C. Obra</div>
+                        </div>
+                         <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-cobra">Construção (C. Obra)</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputPRECOS"
+                                    id="id-cobra"
+                                    placeholder="Input"
+                                    value="7000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">R$/m²</div>
+                        </div>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Empreendimento</summary>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details open>
+                        <summary class="tituloCategoria">Índices</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-incc">INCC</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-incc"
+                                    placeholder="Input"
+                                    value="7.50"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% a.a.</div>
+                        </div>
+                        <!-- ÍNDICES DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-ipca">IPCA</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-ipca"
+                                    placeholder="Input"
+                                    value="5.50"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% a.a.</div>
+                        </div>
+                        <!-- ÍNDICES DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-igpm">IGP-M</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-igpm"
+                                    placeholder="Input"
+                                    value="4.50"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% a.a.</div>
+                        </div>
+                        <!-- ÍNDICES DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-ipreco">I-Preço</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-ipreco"
+                                    placeholder="Input"
+                                    value="8.50"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% a.a.</div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
