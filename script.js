@@ -277,3 +277,104 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// FORMATAR OS INPUTS DE DINHEIROS
+document.addEventListener("DOMContentLoaded", () => {
+  const MAX_DIGITS = 9;
+
+  const digitsOnly = (s) => (s || "").replace(/\D/g, "");
+  const clampDigits = (s, max = MAX_DIGITS) => digitsOnly(s).slice(0, max);
+  const formatThousands = (s) => (s ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "");
+
+  document.querySelectorAll(".PremissaInputDINHEIROS").forEach((input) => {
+    // Permite exibir '.' como separador (type=number não exibe corretamente)
+    try { input.type = "text"; } catch (_) {}
+    input.setAttribute("inputmode", "numeric");
+    input.setAttribute("autocomplete", "off");
+    input.setAttribute("pattern", "\\d{0," + MAX_DIGITS + "}");
+
+    // Aplica formatação com limite e salva o "valor puro" em data-attr
+    const setFormatted = (rawCandidate) => {
+      let raw = clampDigits(rawCandidate, MAX_DIGITS);
+      // remove zeros à esquerda (mas mantém um zero se for tudo zero)
+      raw = raw.replace(/^0+(?=\d)/, "");
+      if (raw === "") {
+        input.value = "";
+        input.dataset.rawValue = "";
+        return;
+      }
+      input.value = formatThousands(raw);
+      input.dataset.rawValue = raw; // valor numérico sem pontos
+    };
+
+    // Normaliza valor inicial
+    setFormatted(input.value);
+
+    // Digitação
+    input.addEventListener("input", (e) => {
+      setFormatted(e.target.value);
+    });
+
+    // Colar
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData("text");
+      setFormatted(text);
+    });
+
+    // Blur (reforça a formatação)
+    input.addEventListener("blur", (e) => {
+      setFormatted(e.target.value);
+    });
+  });
+});
+
+// FORMATAR OS CALCULOS DE DINHEIROS
+document.addEventListener("DOMContentLoaded", () => {
+  const MAX_DIGITS = 9;
+
+  const digitsOnly = (s) => (s || "").replace(/\D/g, "");
+  const clampDigits = (s, max = MAX_DIGITS) => digitsOnly(s).slice(0, max);
+  const formatThousands = (s) => (s ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "");
+
+  document.querySelectorAll(".CalculoDINHEIROS").forEach((input) => {
+    // Permite exibir '.' como separador (type=number não exibe corretamente)
+    try { input.type = "text"; } catch (_) {}
+    input.setAttribute("inputmode", "numeric");
+    input.setAttribute("autocomplete", "off");
+    input.setAttribute("pattern", "\\d{0," + MAX_DIGITS + "}");
+
+    // Aplica formatação com limite e salva o "valor puro" em data-attr
+    const setFormatted = (rawCandidate) => {
+      let raw = clampDigits(rawCandidate, MAX_DIGITS);
+      // remove zeros à esquerda (mas mantém um zero se for tudo zero)
+      raw = raw.replace(/^0+(?=\d)/, "");
+      if (raw === "") {
+        input.value = "";
+        input.dataset.rawValue = "";
+        return;
+      }
+      input.value = formatThousands(raw);
+      input.dataset.rawValue = raw; // valor numérico sem pontos
+    };
+
+    // Normaliza valor inicial
+    setFormatted(input.value);
+
+    // Digitação
+    input.addEventListener("input", (e) => {
+      setFormatted(e.target.value);
+    });
+
+    // Colar
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData("text");
+      setFormatted(text);
+    });
+
+    // Blur (reforça a formatação)
+    input.addEventListener("blur", (e) => {
+      setFormatted(e.target.value);
+    });
+  });
+});

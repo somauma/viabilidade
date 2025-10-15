@@ -19,11 +19,12 @@
             <div class="wrapPage1">
                 <!-- CATEGORIA 0 -->
                 <div class="wrapCollapseAll">
-                    <button class="btnCollapseAll" id="btn-toggle-all">Expandir/Contrair</button>
+                    <button class="btnCollapseAll" id="btn-toggle-all">[+-]</button>
+                    <button class="btnGerarFluxo" id="btn-gerar-fluxo">Gerar Fluxos</button>
                 </div>
                 <!-- CATEGORIAS -->
                 <div class="wrapCategoria">
-                    <details open>
+                    <details>
                         <summary class="tituloCategoria">Prazos</summary>
                         <!-- DADOS -->
                         <div class="gridPremissa">
@@ -102,11 +103,18 @@
                             </div>
                             <div class="PremissaUnit">meses</div>
                         </div>
+                         <div class="gridPremissa">
+                            <label class="CalculoSoloLabel" for="id-area-outros">(=) Prazo Total</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoSoloDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoSoloUnit">meses</div>
+                        </div>
                     </details>
                 </div>
                 <!-- CATEGORIAS -->
                 <div class="wrapCategoria">
-                    <details open>
+                    <details>
                         <summary class="tituloCategoria">Empreendimento</summary>
                         <!-- DADOS -->
                         <div class="gridPremissa">
@@ -165,17 +173,46 @@
                             </div>
                             <div class="PremissaUnit">m²</div>
                         </div>
+                        <div class="gridPremissa">
+                            <label class="CalculoSoloLabel" for="id-area-outros">(=) Área Privativa Total</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoSoloDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoSoloUnit">m²</div>
+                        </div>
                     </details>
                 </div>
                 <!-- CATEGORIAS -->
                 <div class="wrapCategoria">
-                    <details open>
+                    <details>
                         <summary class="tituloCategoria">Aquisição</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-preco-aquisicao">Preço de Compra</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputDINHEIROS"
+                                    id="id-preco-aquisicao"
+                                    placeholder="Input"
+                                    value="10000000"
+                                    type="number"
+                                    min="0"
+                                    max="100000" />
+                            </div>
+                            <div class="PremissaUnit">R$</div>
+                        </div>
+                                                <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) </label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$/m²</div>
+                        </div>
                     </details>
                 </div>
                 <!-- CATEGORIAS -->
                 <div class="wrapCategoria">
-                    <details open>
+                    <details>
                         <summary class="tituloCategoria">VGV</summary>
                         <!-- DADOS -->
                         <div class="gridPremissa">
@@ -192,6 +229,13 @@
                             </div>
                             <div class="PremissaUnit">R$/m²</div>
                         </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) VGV Residencial</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-vgv-residencial-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
                         <div class="gridPremissa">
                             <label class="PremissaLabel" for="id-preco-escritorios">Preço Escritórios</label>
                             <div class="PremissaInputSpinbox">
@@ -205,6 +249,13 @@
                                     max="100000" />
                             </div>
                             <div class="PremissaUnit">R$/m²</div>
+                        </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) VGV Escritórios</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
                         </div>
                         <div class="gridPremissa">
                             <label class="PremissaLabel" for="id-preco-lojas">Preço Lojas</label>
@@ -220,6 +271,13 @@
                             </div>
                             <div class="PremissaUnit">R$/m²</div>
                         </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) VGV Lojas</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
                         <div class="gridPremissa">
                             <label class="PremissaLabel" for="id-preco-outros">Preço Outros</label>
                             <div class="PremissaInputSpinbox">
@@ -234,52 +292,86 @@
                             </div>
                             <div class="PremissaUnit">R$/m²</div>
                         </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) VGV Outros</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
                     </details>
                 </div>
                 <!-- CATEGORIAS -->
                 <div class="wrapCategoria">
-                    <details open>
+                    <details>
                         <summary class="tituloCategoria">Outras Receitas</summary>
-                    </details>
-                </div>
-                <!-- CATEGORIAS -->
-                <div class="wrapCategoria">
-                    <details open>
-                        <summary class="tituloCategoria">Despesas Comerciais</summary>
-                    </details>
-                </div>
-                <!-- CATEGORIAS -->
-                <div class="wrapCategoria">
-                    <details open>
-                        <summary class="tituloCategoria">Despesas Operacionais</summary>
-                        <!-- DADOS -->
+                         <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-prazo-repasse">Subvenção PMSP</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputMESES"
+                                    id="id-prazo-repasse"
+                                    placeholder="Input"
+                                    value="50"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="1" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">pontos</div>
+                        </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-area-outros">(=)</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">%</div>
+                        </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-area-outros">(=)</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="Calculo2DINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="Calculo2Unit">R$</div>
+                        </div>
                         <div class="gridPremissa">
-                            <label class="PremissaLabel" for="id-fee-aquisicao">Fee Aquisição</label>
+                            <label class="PremissaLabel" for="id-ipreco">Rendimentos</label>
                             <div class="PremissaInputSpinbox">
                                 <input
                                     class="PremissaInputJUROS"
-                                    id="id-fee-aquisicao"
+                                    id="id-ipreco"
                                     placeholder="Input"
-                                    value="1.00"
+                                    value="12.00"
                                     type="number"
                                     min="0"
-                                    max="10"
+                                    max="99"
                                     step="0.25" />
                                 <div class="spinControls">
                                     <button type="button" class="spinControlsMENOS">-</button>
                                     <button type="button" class="spinControlsMAIS">+</button>
                                 </div>
                             </div>
-                            <div class="PremissaUnit">% da Aquisição</div>
+                            <div class="PremissaUnit">% a.a.</div>
                         </div>
-                         <div class="gridPremissa">
-                            <label class="PremissaLabel" for="id-fee-originacao">Fee Originação</label>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details>
+                        <summary class="tituloCategoria">Despesas Comerciais</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-aquisicao">Propaganda e Mkt (PP&amp;M)</label>
                             <div class="PremissaInputSpinbox">
                                 <input
                                     class="PremissaInputJUROS"
-                                    id="id-fee-originacao"
+                                    id="id-fee-aquisicao"
                                     placeholder="Input"
-                                    value="1.00"
+                                    value="4.00"
                                     type="number"
                                     min="0"
                                     max="10"
@@ -291,14 +383,106 @@
                             </div>
                             <div class="PremissaUnit">% do VGV</div>
                         </div>
-                         <div class="gridPremissa">
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) </label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-aquisicao">Corretagem</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-fee-aquisicao"
+                                    placeholder="Input"
+                                    value="6.00"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do VGV</div>
+                        </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) </label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-aquisicao">Impostos (RET)</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-fee-aquisicao"
+                                    placeholder="Input"
+                                    value="4.00"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do VGV</div>
+                        </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) </label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-aquisicao">Repasse</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-fee-aquisicao"
+                                    placeholder="Input"
+                                    value="0.40"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do VGV</div>
+                        </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=) </label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-aquisicao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                    </details>
+                </div>
+                <!-- CATEGORIAS -->
+                <div class="wrapCategoria">
+                    <details>
+                        <summary class="tituloCategoria">Despesas Operacionais</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
                             <label class="PremissaLabel" for="id-fee-gestao">Fee Gestão Global</label>
                             <div class="PremissaInputSpinbox">
                                 <input
                                     class="PremissaInputJUROS"
                                     id="id-fee-gestao"
                                     placeholder="Input"
-                                    value="2.50"
+                                    value="3.50"
                                     type="number"
                                     min="0"
                                     max="10"
@@ -310,7 +494,14 @@
                             </div>
                             <div class="PremissaUnit">% do VGV</div>
                         </div>
-                         <div class="gridPremissa">
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=)</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-gestao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                        <div class="gridPremissa">
                             <label class="PremissaLabel" for="id-pop">Pré-Operacionais (POP)</label>
                             <div class="PremissaInputSpinbox">
                                 <input
@@ -329,7 +520,14 @@
                             </div>
                             <div class="PremissaUnit">% do C. Obra</div>
                         </div>
-                         <div class="gridPremissa">
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=)</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-pop-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                        <div class="gridPremissa">
                             <label class="PremissaLabel" for="id-op">Operacionais (OP)</label>
                             <div class="PremissaInputSpinbox">
                                 <input
@@ -348,7 +546,14 @@
                             </div>
                             <div class="PremissaUnit">% do C. Obra</div>
                         </div>
-                         <div class="gridPremissa">
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=)</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-op-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                        <div class="gridPremissa">
                             <label class="PremissaLabel" for="id-cobra">Construção (C. Obra)</label>
                             <div class="PremissaInputSpinbox">
                                 <input
@@ -362,17 +567,89 @@
                             </div>
                             <div class="PremissaUnit">R$/m²</div>
                         </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=)</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-cobra-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
                     </details>
                 </div>
                 <!-- CATEGORIAS -->
                 <div class="wrapCategoria">
-                    <details open>
-                        <summary class="tituloCategoria">Empreendimento</summary>
+                    <details>
+                        <summary class="tituloCategoria">Operações Financeiras</summary>
+                        <!-- DADOS -->
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-fee-gestao">Alavancagem</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-fee-gestao"
+                                    placeholder="Input"
+                                    value="70.00"
+                                    type="number"
+                                    min="0"
+                                    max="10"
+                                    step="5.00" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% do C.Obra</div>
+                        </div>
+                        <div class="gridPremissaCalculo">
+                            <label class="CalculoLabel" for="id-vgv-residencial-reais">(=)</label>
+                            <div class="PremissaInputSpinbox">
+                                <span class="CalculoDINHEIROS" id="id-fee-gestao-reais">100.000</span>
+                            </div>
+                            <div class="CalculoUnit">R$</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-incc">Juros (CET)</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-incc"
+                                    placeholder="Input"
+                                    value="19.00"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% a.a.</div>
+                        </div>
+                        <div class="gridPremissa">
+                            <label class="PremissaLabel" for="id-incc">Correção</label>
+                            <div class="PremissaInputSpinbox">
+                                <input
+                                    class="PremissaInputJUROS"
+                                    id="id-incc"
+                                    placeholder="Input"
+                                    value="0.50"
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    step="0.25" />
+                                <div class="spinControls">
+                                    <button type="button" class="spinControlsMENOS">-</button>
+                                    <button type="button" class="spinControlsMAIS">+</button>
+                                </div>
+                            </div>
+                            <div class="PremissaUnit">% a.a.</div>
+                        </div>
                     </details>
                 </div>
                 <!-- CATEGORIAS -->
                 <div class="wrapCategoria">
-                    <details open>
+                    <details>
                         <summary class="tituloCategoria">Índices</summary>
                         <!-- DADOS -->
                         <div class="gridPremissa">
