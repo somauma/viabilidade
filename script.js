@@ -1,380 +1,329 @@
-const toggleButton = document.getElementById("btn-toggle-all");
-const detailsElements = document.querySelectorAll("details");
+// script.js (module)
 
-toggleButton.addEventListener("click", () => {
-    // Verifica se pelo menos um details está aberto
-    const someAreOpen = Array.from(detailsElements).some((detail) => detail.hasAttribute("open"));
+// ---------- Utils ----------
+const INTL_THOUSANDS = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
+const INTL_PERCENT = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
 
-    detailsElements.forEach((detail) => {
-        if (someAreOpen) {
-            // Se algum está aberto, fecha todos
-            detail.removeAttribute("open");
-        } else {
-            // Se todos estão fechados, abre todos
-            detail.setAttribute("open", "");
-        }
-    });
-});
+const fmtThousands = (n) => INTL_THOUSANDS.format(Math.round(Number(n) || 0));
+const fmtPercentLabel = (n) => `${INTL_PERCENT.format(Number(n) || 0)}%`;
 
-// SUBSTITUI OS BOTÕES + E - DAS SPINBOXES E FORMATA OS CAMPOS DE MESES E JUROS
-document.addEventListener("DOMContentLoaded", () => {
-  // -------- utilitários --------
-  const onlyDigits = (s) => s.replace(/\D/g, "");
-  const toNum = (v) => {
-    if (v == null) return NaN;
-    const s = String(v).trim().replace(",", ".");
-    return s === "" ? NaN : Number(s);
+const digitsOnly = (s) => String(s || '').replace(/\D/g, '');
+const clampDigits = (s, max) => digitsOnly(s).slice(0, max);
+const formatView = (raw) => (raw ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '');
+
+const toNum = (v) => {
+  if (v == null) return NaN;
+  const s = String(v).trim().replace(/\./g, '').replace(',', '.');
+  return s === '' ? NaN : Number(s);
+};
+
+// Sanitiza juros/percentual durante digitação: mantém 2 casas
+function sanitizePercentText(text, maxIntDigits = 4) {
+  let t = String(text || '').replace(/[^0-9.,]/g, '');
+  const firstSep = t.search(/[.,]/);
+  if (firstSep !== -1) {
+    t = t.slice(0, firstSep + 1) + t.slice(firstSep + 1).replace(/[.,]/g, '');
+  }
+  let [intPart, decPart = ''] = t.split(/[.,]/);
+  intPart = digitsOnly(intPart).slice(0, maxIntDigits);
+  decPart = digitsOnly(decPart).slice(0, 2);
+  return decPart.length ? `${intPart}.${decPart}` : intPart;
+}
+
+// Dataset helpers (inputs mascarados como texto com value "10000" → "10.000")
+const getRawFrom = (selector) => {
+  const el = document.querySelector(selector);
+  return Number(el?.dataset.rawValue || 0);
+};
+
+const getPercent = (selector) => {
+  const el = document.querySelector(selector);
+  return Number(el?.value || 0); // já é number (type="number") com duas casas
+};
+
+const getInt = (selector) => {
+  const el = document.querySelector(selector);
+  return Math.trunc(Number(el?.value || 0));
+};
+
+const setOut = (selector, number) => {
+  const out = document.querySelector(selector);
+  if (out) out.textContent = fmtThousands(number);
+};
+
+const setOutPercentText = (selector, number) => {
+  const out = document.querySelector(selector);
+  if (out) out.textContent = fmtPercentLabel(number).replace('.', ','); // vírgula visual
+};
+
+// ---------- Máscaras & Inputs ----------
+document.addEventListener('DOMContentLoaded', () => {
+  // Toggle all details
+  const btn = document.getElementById('btn-toggle-all');
+  const details = [...document.querySelectorAll('details')];
+
+  const setToggleState = (open) => {
+    details.forEach(d => d.toggleAttribute('open', open));
+    btn.setAttribute('aria-pressed', String(open));
+    btn.title = open ? 'Recolher todas as seções' : 'Expandir todas as seções';
+    btn.textContent = open ? '− Contrair' : '+ Expandir';
+  };
+  btn.addEventListener('click', () => {
+    const anyOpen = details.some(d => d.open);
+    setToggleState(!anyOpen);
+  });
+  // comece fechado
+  setToggleState(false);
+
+  // Delegação: botões +/− das spinboxes
+  document.addEventListener('click', (e) => {
+    const isPlus = e.target.classList.contains('spinControlsMAIS');
+    const isMinus = e.target.classList.contains('spinControlsMENOS');
+    if (!isPlus && !isMinus) return;
+
+    const wrapper = e.target.closest('.PremissaInputSpinbox');
+    const input = wrapper?.querySelector('input');
+    if (!input) return;
+
+    const step = input.step ? Number(input.step) : 1;
+    const min = input.min !== '' ? Number(input.min) : -Infinity;
+    const max = input.max !== '' ? Number(input.max) : Infinity;
+
+    let current = Number(input.value || 0);
+    if (Number.isNaN(current)) current = 0;
+
+    let next = current + (isPlus ? step : -step);
+    next = Math.min(Math.max(next, min), max);
+
+    if (input.classList.contains('PremissaInputMESES')) {
+      next = Math.round(next);
+      input.value = String(next).slice(0, 2);
+    } else if (input.classList.contains('PremissaInputJUROS')) {
+      input.value = next.toFixed(2);
+    } else {
+      input.value = String(next);
+    }
+
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('blur', { bubbles: true }));
+    updateAll();
+  });
+
+  // Máscara: ÁREAS / PREÇOS (p/m²) / DINHEIROS (brutos) — inputs text com milhar
+  const classMaxMap = {
+    '.PremissaInputAREAS': 6,
+    '.PremissaInputPRECOS': 5,
+    '.PremissaInputDINHEIROS': 9,
   };
 
-  // Limita parte inteira a N dígitos e no máx. 2 decimais (aceita . ou , na digitação)
-  function sanitizeInterestRaw(text, maxIntDigits = 4) {
-    if (!text) return "";
-    // mantém apenas dígitos e separadores . ,
-    let t = text.replace(/[^0-9.,]/g, "");
-    // normaliza múltiplos separadores -> mantém só o primeiro
-    const firstSep = t.search(/[.,]/);
-    if (firstSep !== -1) {
-      // remove separadores posteriores
-      t =
-        t.slice(0, firstSep + 1) +
-        t
-          .slice(firstSep + 1)
-          .replace(/[.,]/g, "");
-    }
-    // separa inteiro/decimal (aceita , ou .)
-    let [intPart, decPart = ""] = t.split(/[.,]/);
-    intPart = onlyDigits(intPart).slice(0, maxIntDigits);
-    decPart = onlyDigits(decPart).slice(0, 2);
-    // Recompõe usando ponto (compatível com type=number)
-    return decPart.length ? `${intPart}.${decPart}` : intPart;
-  }
+  Object.entries(classMaxMap).forEach(([selector, MAX]) => {
+    document.querySelectorAll(selector).forEach((input) => {
+      // força "text", numérico soft, e guarda valor puro no dataset
+      try { input.type = 'text'; } catch {}
+      input.setAttribute('inputmode', 'numeric');
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('pattern', `\\d{0,${MAX}}`);
 
-  // Força duas casas decimais (retorna string com ponto)
-  function forceTwoDecimals(value, maxIntDigits = 4) {
-    // sanitiza textual e depois formata
-    const s = sanitizeInterestRaw(String(value ?? ""), maxIntDigits);
-    const n = toNum(s);
-    if (isNaN(n)) return "";
-    // limita novamente a parte inteira antes de formatar
-    const capped = capIntDigits(n, maxIntDigits);
-    return capped.toFixed(2); // com ponto
-  }
+      const setFmt = (candidate) => {
+        let raw = clampDigits(candidate, MAX).replace(/^0+(?=\d)/, '');
+        input.value = raw ? formatView(raw) : '';
+        input.dataset.rawValue = raw || '0';
+      };
 
-  // Corta a parte inteira em N dígitos preservando valor
-  function capIntDigits(n, maxIntDigits = 4) {
-    const sign = n < 0 ? -1 : 1;
-    const abs = Math.abs(n);
-    const [intStr] = abs.toString().split(".");
-    if (intStr.length <= maxIntDigits) return n;
-    // se exceder, trunca para o maior número com N dígitos (ex.: 9999.99)
-    const maxInt = Number("9".repeat(maxIntDigits));
-    return sign * (maxInt + (abs % 1)); // mantém parte decimal original
-  }
+      // init
+      setFmt(input.value);
 
-  // -------- 1) MESES --------
-  document.querySelectorAll(".PremissaInputMESES").forEach((input) => {
-    // ao digitar
-    input.addEventListener("input", (e) => {
-      let v = onlyDigits(e.target.value).slice(0, 2);
-      e.target.value = v;
-    });
-    // ao sair, garante min/max e inteiro
-    input.addEventListener("blur", (e) => {
-      const min = e.target.min !== "" ? Number(e.target.min) : 0;
-      const max = e.target.max !== "" ? Number(e.target.max) : 99;
-      let v = Number(onlyDigits(e.target.value));
-      if (isNaN(v)) {
-        e.target.value = "";
-        return;
-      }
-      if (v < min) v = min;
-      if (v > max) v = max;
-      e.target.value = String(Math.floor(v));
+      input.addEventListener('input', (e) => setFmt(e.target.value));
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        setFmt(text);
+      });
+      input.addEventListener('blur', (e) => setFmt(e.target.value));
     });
   });
 
-  // -------- 2) JUROS --------
-  document.querySelectorAll(".PremissaInputJUROS").forEach((input) => {
-    // ao digitar: limpa e limita inteiro/decimais (mostra com ponto por ser type=number)
-    input.addEventListener("input", (e) => {
-      const sanitized = sanitizeInterestRaw(e.target.value, 4);
-      e.target.value = sanitized;
-    });
+  // Máscara: MESES (inteiro 0–99)
+  document.addEventListener('input', (e) => {
+    if (!e.target.classList.contains('PremissaInputMESES')) return;
+    e.target.value = clampDigits(e.target.value, 2);
+  }, true);
+  document.addEventListener('blur', (e) => {
+    if (!e.target.classList.contains('PremissaInputMESES')) return;
+    const el = e.target;
+    const min = el.min !== '' ? Number(el.min) : 0;
+    const max = el.max !== '' ? Number(el.max) : 99;
+    let v = Number(clampDigits(el.value, 2) || 0);
+    v = Math.min(Math.max(v, min), max);
+    el.value = String(Math.trunc(v));
+  }, true);
 
-    // ao sair: força 2 casas e respeita min/max/step
-    input.addEventListener("blur", (e) => {
-      const min = e.target.min !== "" ? Number(e.target.min) : 0;
-      const max = e.target.max !== "" ? Number(e.target.max) : 99;
-      const step = e.target.step !== "" ? Number(e.target.step) : 0.01;
+  // Máscara: JUROS/percentuais
+  document.addEventListener('input', (e) => {
+    if (!e.target.classList.contains('PremissaInputJUROS')) return;
+    e.target.value = sanitizePercentText(e.target.value, 4);
+  }, true);
+  document.addEventListener('blur', (e) => {
+    if (!e.target.classList.contains('PremissaInputJUROS')) return;
+    const el = e.target;
+    const min = el.min !== '' ? Number(el.min) : 0;
+    const max = el.max !== '' ? Number(el.max) : 100;
+    const step = el.step !== '' ? Number(el.step) : 0.01;
 
-      let val = forceTwoDecimals(e.target.value, 4);
-      if (val === "") {
-        e.target.value = "";
-        return;
-      }
+    let num = Number(sanitizePercentText(el.value, 4) || 0);
+    num = Math.min(Math.max(num, min), max);
+    if (step > 0) num = Math.round(num / step) * step;
+    el.value = num.toFixed(2);
+  }, true);
 
-      let num = Number(val);
-      if (num < min) num = min;
-      if (num > max) num = max;
+  // Qualquer mudança relevante → recalcula
+  document.addEventListener('input', updateAll);
+  document.addEventListener('blur', updateAll, true);
 
-      // opcional: alinhar ao step (ex.: 7.53 com step 0.25 -> 7.50)
-      if (step > 0) {
-        const steps = Math.round(num / step);
-        num = steps * step;
-      }
-
-      e.target.value = num.toFixed(2); // ponto por ser type=number
-    });
-
-    // normaliza valores iniciais já presentes no HTML
-    const initial = input.value;
-    if (initial != null && initial !== "") {
-      input.value = forceTwoDecimals(initial, 4);
-    }
-  });
-
-  // -------- botões + e - das spinboxes --------
-  document.querySelectorAll(".PremissaInputSpinbox").forEach((inputWrapper) => {
-    const input = inputWrapper.querySelector('input[type="number"]');
-    const btnPlus = inputWrapper.querySelector(".spinControlsMAIS");
-    const btnMinus = inputWrapper.querySelector(".spinControlsMENOS");
-    if (!input || !btnPlus || !btnMinus) return;
-
-    const applyDelta = (delta) => {
-      const step = input.step !== "" ? Number(input.step) : 1;
-      const min = input.min !== "" ? Number(input.min) : -Infinity;
-      const max = input.max !== "" ? Number(input.max) : Infinity;
-
-      let current = toNum(input.value);
-      if (isNaN(current)) current = 0;
-
-      let next = current + delta * step;
-      if (next < min) next = min;
-      if (next > max) next = max;
-
-      if (input.classList.contains("PremissaInputJUROS")) {
-        // limite de dígitos na parte inteira antes de formatar
-        next = capIntDigits(next, 4);
-        input.value = next.toFixed(2); // ponto, válido para type=number
-      } else if (input.classList.contains("PremissaInputMESES")) {
-        // meses sempre inteiro, até 2 dígitos
-        next = Math.round(next);
-        if (next < 0) next = 0;
-        input.value = String(next).slice(0, 2);
-      } else {
-        // fallback genérico
-        input.value = String(next);
-      }
-
-      // dispara 'input' para manter máscaras sincronizadas
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    };
-
-    btnPlus.addEventListener("click", () => applyDelta(1));
-    btnMinus.addEventListener("click", () => applyDelta(-1));
-  });
+  // Primeira rodada
+  updateAll();
 });
 
-// FORMATAR OS INPUTS DE ÁREAS
-document.addEventListener("DOMContentLoaded", () => {
-  const MAX_DIGITS = 6;
+// ---------- Cálculos ----------
+function calcAreaTotal() {
+  return getRawFrom('#id-area-residencial') +
+         getRawFrom('#id-area-escritorios') +
+         getRawFrom('#id-area-lojas') +
+         getRawFrom('#id-area-outros');
+}
 
-  const digitsOnly = (s) => (s || "").replace(/\D/g, "");
-  const clampDigits = (s, max = MAX_DIGITS) => digitsOnly(s).slice(0, max);
-  const formatThousands = (s) => (s ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "");
+function calcPrazosTotal() {
+  return getInt('#id-prazo-diligencia') +
+         getInt('#id-prazo-aprovacao') +
+         getInt('#id-prazo-construcao') +
+         getInt('#id-prazo-repasse');
+}
 
-  document.querySelectorAll(".PremissaInputAREAS").forEach((input) => {
-    // Permite exibir '.' como separador (type=number não exibe corretamente)
-    try { input.type = "text"; } catch (_) {}
-    input.setAttribute("inputmode", "numeric");
-    input.setAttribute("autocomplete", "off");
-    input.setAttribute("pattern", "\\d{0," + MAX_DIGITS + "}");
+function calcVgv() {
+  const ar = getRawFrom('#id-area-residencial');
+  const ae = getRawFrom('#id-area-escritorios');
+  const al = getRawFrom('#id-area-lojas');
+  const ao = getRawFrom('#id-area-outros');
 
-    // Aplica formatação com limite e salva o "valor puro" em data-attr
-    const setFormatted = (rawCandidate) => {
-      let raw = clampDigits(rawCandidate, MAX_DIGITS);
-      // remove zeros à esquerda (mas mantém um zero se for tudo zero)
-      raw = raw.replace(/^0+(?=\d)/, "");
-      if (raw === "") {
-        input.value = "";
-        input.dataset.rawValue = "";
-        return;
-      }
-      input.value = formatThousands(raw);
-      input.dataset.rawValue = raw; // valor numérico sem pontos
-    };
+  const pr = getRawFrom('#id-preco-residencial');
+  const pe = getRawFrom('#id-preco-escritorios');
+  const pl = getRawFrom('#id-preco-lojas');
+  const po = getRawFrom('#id-preco-outros');
 
-    // Normaliza valor inicial
-    setFormatted(input.value);
+  const vgvR = ar * pr;
+  const vgvE = ae * pe;
+  const vgvL = al * pl;
+  const vgvO = ao * po;
+  const vgvT = vgvR + vgvE + vgvL + vgvO;
 
-    // Digitação
-    input.addEventListener("input", (e) => {
-      setFormatted(e.target.value);
-    });
+  return { vgvR, vgvE, vgvL, vgvO, vgvT };
+}
 
-    // Colar
-    input.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData("text");
-      setFormatted(text);
-    });
 
-    // Blur (reforça a formatação)
-    input.addEventListener("blur", (e) => {
-      setFormatted(e.target.value);
-    });
-  });
-});
+function calcPrecoAquisicaoPm2(precoAquisicao, areaTotal) {
+  if (!areaTotal) return 0;
+  return Math.round(precoAquisicao / areaTotal);
+}
 
-// FORMATAR OS INPUTS DE PREÇOS
-document.addEventListener("DOMContentLoaded", () => {
-  const MAX_DIGITS = 5;
+function calcDespesasComerciais(vgvTotal) {
+  const ppem = getPercent('#id-ppem');
+  const corret = getPercent('#id-corretagem');
+  const imp = getPercent('#id-impostos');
+  const rep = getPercent('#id-repasse');
 
-  const digitsOnly = (s) => (s || "").replace(/\D/g, "");
-  const clampDigits = (s, max = MAX_DIGITS) => digitsOnly(s).slice(0, max);
-  const formatThousands = (s) => (s ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "");
+  const vPPM = vgvTotal * (ppem / 100);
+  const vCor = vgvTotal * (corret / 100);
+  const vImp = vgvTotal * (imp / 100);
+  const vRep = vgvTotal * (rep / 100);
+  const total = vPPM + vCor + vImp + vRep;
 
-  document.querySelectorAll(".PremissaInputPRECOS").forEach((input) => {
-    // Permite exibir '.' como separador (type=number não exibe corretamente)
-    try { input.type = "text"; } catch (_) {}
-    input.setAttribute("inputmode", "numeric");
-    input.setAttribute("autocomplete", "off");
-    input.setAttribute("pattern", "\\d{0," + MAX_DIGITS + "}");
+  return { vPPM, vCor, vImp, vRep, total };
+}
 
-    // Aplica formatação com limite e salva o "valor puro" em data-attr
-    const setFormatted = (rawCandidate) => {
-      let raw = clampDigits(rawCandidate, MAX_DIGITS);
-      // remove zeros à esquerda (mas mantém um zero se for tudo zero)
-      raw = raw.replace(/^0+(?=\d)/, "");
-      if (raw === "") {
-        input.value = "";
-        input.dataset.rawValue = "";
-        return;
-      }
-      input.value = formatThousands(raw);
-      input.dataset.rawValue = raw; // valor numérico sem pontos
-    };
+function calcCustoObra(areaTotal) {
+  const cobraPm2 = getRawFrom('#id-cobra');
+  return areaTotal * cobraPm2;
+}
 
-    // Normaliza valor inicial
-    setFormatted(input.value);
+function calcDespesasOperacionais(vgvTotal, custoObra) {
+  const fee = getPercent('#id-fee-gestao');
+  const pop = getPercent('#id-pop');
+  const op = getPercent('#id-op');
 
-    // Digitação
-    input.addEventListener("input", (e) => {
-      setFormatted(e.target.value);
-    });
+  const vFee = vgvTotal * (fee / 100);
+  const vPop = custoObra * (pop / 100);
+  const vOp = custoObra * (op / 100);
 
-    // Colar
-    input.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData("text");
-      setFormatted(text);
-    });
+  const total = vFee + vPop + vOp + custoObra;
+  return { vFee, vPop, vOp, total };
+}
 
-    // Blur (reforça a formatação)
-    input.addEventListener("blur", (e) => {
-      setFormatted(e.target.value);
-    });
-  });
-});
+function calcAlavancagem(custoObra) {
+  const alav = getPercent('#id-alavancagem');
+  return custoObra * (alav / 100);
+}
 
-// FORMATAR OS INPUTS DE DINHEIROS
-document.addEventListener("DOMContentLoaded", () => {
-  const MAX_DIGITS = 9;
+function calcSubvencao(vgvTotal) {
+  const pontos = getInt('#id-subvencao-pontos'); // 1 ponto = 0,25%
+  const percentual = pontos * 0.25;
+  const valor = vgvTotal * (percentual / 100); // ajuste a base se necessário
+  return { percentual, valor };
+}
 
-  const digitsOnly = (s) => (s || "").replace(/\D/g, "");
-  const clampDigits = (s, max = MAX_DIGITS) => digitsOnly(s).slice(0, max);
-  const formatThousands = (s) => (s ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "");
+function updateAll() {
+  // Áreas e prazos
+  const areaTotal = calcAreaTotal();
+  setOut('#id-area-total', areaTotal);
 
-  document.querySelectorAll(".PremissaInputDINHEIROS").forEach((input) => {
-    // Permite exibir '.' como separador (type=number não exibe corretamente)
-    try { input.type = "text"; } catch (_) {}
-    input.setAttribute("inputmode", "numeric");
-    input.setAttribute("autocomplete", "off");
-    input.setAttribute("pattern", "\\d{0," + MAX_DIGITS + "}");
+  const prazosTotal = calcPrazosTotal();
+  setOut('#id-prazo-total', prazosTotal);
 
-    // Aplica formatação com limite e salva o "valor puro" em data-attr
-    const setFormatted = (rawCandidate) => {
-      let raw = clampDigits(rawCandidate, MAX_DIGITS);
-      // remove zeros à esquerda (mas mantém um zero se for tudo zero)
-      raw = raw.replace(/^0+(?=\d)/, "");
-      if (raw === "") {
-        input.value = "";
-        input.dataset.rawValue = "";
-        return;
-      }
-      input.value = formatThousands(raw);
-      input.dataset.rawValue = raw; // valor numérico sem pontos
-    };
+  // VGVs
+  const { vgvR, vgvE, vgvL, vgvO, vgvT } = calcVgv();
+  setOut('#id-vgv-residencial-reais', vgvR);
+  setOut('#id-vgv-escritorios-reais', vgvE);
+  setOut('#id-vgv-lojas-reais', vgvL);
+  setOut('#id-vgv-outros-reais', vgvO);
+  setOut('#id-vgv-total-reais', vgvT);
 
-    // Normaliza valor inicial
-    setFormatted(input.value);
+  // VGV por m²
+  const vgvPm2 = areaTotal ? Math.round(vgvT / areaTotal) : 0;
+  setOut('#id-vgv-total-reais-pm2', vgvPm2);
 
-    // Digitação
-    input.addEventListener("input", (e) => {
-      setFormatted(e.target.value);
-    });
+  // Aquisição p/m²
+  const precoAquisicao = getRawFrom('#id-preco-aquisicao');
+  const aqPm2 = calcPrecoAquisicaoPm2(precoAquisicao, areaTotal);
+  setOut('#id-preco-aquisicao-pm2', aqPm2);
 
-    // Colar
-    input.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData("text");
-      setFormatted(text);
-    });
+  // Despesas comerciais
+  const dc = calcDespesasComerciais(vgvT);
+  setOut('#id-ppem-reais', dc.vPPM);
+  setOut('#id-corretagem-reais', dc.vCor);
+  setOut('#id-impostos-reais', dc.vImp);
+  setOut('#id-repasse-reais', dc.vRep);
+  setOut('#id-despesas-comerciais-reais', dc.total);
+  const dcPm2 = areaTotal ? Math.round(dc.total / areaTotal) : 0;
+  setOut('#id-despesas-comerciais-reais-pm2', dcPm2);
 
-    // Blur (reforça a formatação)
-    input.addEventListener("blur", (e) => {
-      setFormatted(e.target.value);
-    });
-  });
-});
+  // Custo de obra (R$/m² * área)
+  const custoObra = calcCustoObra(areaTotal);
+  setOut('#id-cobra-reais', custoObra);
 
-// FORMATAR OS CALCULOS DE DINHEIROS
-document.addEventListener("DOMContentLoaded", () => {
-  const MAX_DIGITS = 9;
+  // Despesas operacionais (fee + POP + OP + C.Obra)
+  const dope = calcDespesasOperacionais(vgvT, custoObra);
+  setOut('#id-fee-gestao-reais', dope.vFee);
+  setOut('#id-pop-reais', dope.vPop);
+  setOut('#id-op-reais', dope.vOp);
+  setOut('#id-despesas-operacionais-reais', dope.total);
+  const dopePm2 = areaTotal ? Math.round(dope.total / areaTotal) : 0;
+  setOut('#id-despesas-operacionais-reais-pm2', dopePm2);
 
-  const digitsOnly = (s) => (s || "").replace(/\D/g, "");
-  const clampDigits = (s, max = MAX_DIGITS) => digitsOnly(s).slice(0, max);
-  const formatThousands = (s) => (s ? s.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "");
+  // Alavancagem (% do C.Obra)
+  const alavR$ = calcAlavancagem(custoObra);
+  setOut('#id-alavancagem-reais', alavR$);
 
-  document.querySelectorAll(".CalculoDINHEIROS").forEach((input) => {
-    // Permite exibir '.' como separador (type=number não exibe corretamente)
-    try { input.type = "text"; } catch (_) {}
-    input.setAttribute("inputmode", "numeric");
-    input.setAttribute("autocomplete", "off");
-    input.setAttribute("pattern", "\\d{0," + MAX_DIGITS + "}");
-
-    // Aplica formatação com limite e salva o "valor puro" em data-attr
-    const setFormatted = (rawCandidate) => {
-      let raw = clampDigits(rawCandidate, MAX_DIGITS);
-      // remove zeros à esquerda (mas mantém um zero se for tudo zero)
-      raw = raw.replace(/^0+(?=\d)/, "");
-      if (raw === "") {
-        input.value = "";
-        input.dataset.rawValue = "";
-        return;
-      }
-      input.value = formatThousands(raw);
-      input.dataset.rawValue = raw; // valor numérico sem pontos
-    };
-
-    // Normaliza valor inicial
-    setFormatted(input.value);
-
-    // Digitação
-    input.addEventListener("input", (e) => {
-      setFormatted(e.target.value);
-    });
-
-    // Colar
-    input.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData("text");
-      setFormatted(text);
-    });
-
-    // Blur (reforça a formatação)
-    input.addEventListener("blur", (e) => {
-      setFormatted(e.target.value);
-    });
-  });
-});
+  // Outras receitas - Subvenção
+  const { percentual, valor } = calcSubvencao(vgvT);
+  setOutPercentText('#id-subvencao-percentual', percentual);
+  setOut('#id-subvencao-reais', valor);
+}

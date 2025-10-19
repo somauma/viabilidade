@@ -6,6 +6,7 @@
     --colorBG5: #643692;
     --colorBORDER1: #d5d5d5;
     --colorBORDER2: #9b35ff;
+    --colorBORDER3: #643692;
     --colorTXT1: #9b35ff;
     --colorTXT2: #ffffff;
     --colorTXT3: #643692;
@@ -256,7 +257,7 @@ button {
     color: var(--colorTXT3);
     font-size: 10px;
     font-weight: 900;
-        z-index: 20;
+    z-index: 20;
 }
 .Calculo2DINHEIROS {
     background-color: var(--colorBG4);
@@ -287,26 +288,32 @@ button {
     line-height: 16px;
     width: 100%;
     color: var(--colorTXT3);
+    z-index: 20;
 }
 .CalculoSoloDINHEIROS {
-    border: 1px solid var(--colorBORDER2);
+    border-top: 1px solid var(--colorBORDER3);
+    border-bottom: 1px solid var(--colorBORDER3);
+    border-left: 1px solid var(--colorBORDER3);
+    border-right: 1px solid var(--colorBORDER1);
     border-radius: 4px 0 0 4px;
-    background-color: var(--colorBG4);
-    color: var(--colorTXT3);
+    background-color: var(--colorBG5);
+    color: var(--colorTXT2);
     font-weight: 900;
     line-height: 16px;
     padding: 4px;
     width: 100%;
+    z-index: 20;
 }
 .CalculoSoloUnit {
-    border-top: 1px solid var(--colorBORDER2);
-    border-right: 1px solid var(--colorBORDER2);
-    border-bottom: 1px solid var(--colorBORDER2);
+    border-top: 1px solid var(--colorBORDER3);
+    border-bottom: 1px solid var(--colorBORDER3);
+    border-right: 1px solid var(--colorBORDER1);
     border-radius: 0 4px 4px 0;
-    background-color: var(--colorBG4);
+    background-color: var(--colorBG5);
     line-height: 16px;
     padding: 4px;
-    color: var(--colorTXT3);
+    color: var(--colorTXT2);
     font-size: 10px;
     font-weight: 900;
+    z-index: 20;
 }
